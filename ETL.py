@@ -39,9 +39,9 @@ def load_data_to_db(df, db_url, table_name):
     print(f"Data loaded to {table_name} table in database.")
 
 if __name__ == "__main__":
-    api_url = "https://jsonplaceholder.typicode.com/posts"  # Sample API for demonstration
+    api_url = "https://jsonplaceholder.typicode.com/posts"  
     data = extract_data_from_api(api_url)
-    data.to_excel('extracted_data.xlsx', index=False)
+    #data.to_excel('extracted_data.xlsx', index=False)
     print("Data extraction complete. Saved to extracted_data.csv")
 
 
