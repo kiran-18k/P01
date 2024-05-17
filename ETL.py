@@ -1,5 +1,7 @@
 import requests
 import pandas as pd
+from sqlalchemy import create_engine
+
 
 def extract_data_from_api(api_url):
     response = requests.get(api_url)
@@ -21,10 +23,25 @@ def transform_data(df):
     
     return transformed_df
 
+
+def load_data_to_db(df, db_url, table_name):
+    # Create a database engine
+    engine = create_engine(db_url)
+    
+    # Load data into the specified table
+    df.to_sql(table_name, engine, if_exists='replace', index=False)
+    
+    # QC Check: Ensure data is loaded into the database
+    loaded_df = pd.read_sql_table(table_name, engine)
+    if loaded_df.empty:
+        raise ValueError("Data loading failed: Table is empty")
+    
+    print(f"Data loaded to {table_name} table in database.")
+
 if __name__ == "__main__":
     api_url = "https://jsonplaceholder.typicode.com/posts"  # Sample API for demonstration
     data = extract_data_from_api(api_url)
-    data.to_csv('extracted_data.csv', index=False)
+    data.to_excel('extracted_data.xlsx', index=False)
     print("Data extraction complete. Saved to extracted_data.csv")
 
 
