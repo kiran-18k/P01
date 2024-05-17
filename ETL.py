@@ -8,12 +8,14 @@ def extract_data_from_api(api_url):
         raise Exception (f"URL:ERROR")
     else:
         response = requests.get(api_url)
+
     if response.status_code == 200:
         data = response.json()
         df = pd.DataFrame(data)
         return df
     else:
         raise Exception(f"Failed to fetch data: {response.status_code}")
+
 
 def transform_data(df):
     # Example transformation: Select specific columns and rename them
@@ -31,6 +33,19 @@ def load_data_to_db(df, db_url, table_name):
 
     # Create a database engine
     engine = create_engine(db_url)
+
+
+    # Load data into the specified table
+    df.to_sql(table_name, engine, if_exists='append', index=False)
+
+    # QC Check: Ensure data is loaded into the database
+    loaded_df = pd.read_sql_table(table_name, engine)
+    if loaded_df.empty:
+        raise ValueError("Data loading failed: Table is empty")
+
+    print(f"Data appended to {table_name} table in database.")
+
+
 
     # Load data into the specified table
     df.to_sql(table_name, engine, if_exists='append', index=False)
