@@ -15,3 +15,16 @@ def extract_data_from_api(api_url):
         return df
     else:
         raise Exception(f"Failed to fetch data: {response.status_code}")
+    
+
+
+def transform_data(df):
+    # Example transformation: Select specific columns and rename them
+    transformed_df = df[['userId', 'id', 'title']].rename(columns={'userId': 'User_ID', 'id': 'Post_ID', 'title': 'Title'})
+
+    # QC Check: Ensure transformed DataFrame has expected columns
+    expected_columns = {'User_ID', 'Post_ID', 'Title'}
+    if not expected_columns.issubset(transformed_df.columns):
+        raise ValueError("Transformation failed: Expected columns are missing")
+
+    return transformed_df
